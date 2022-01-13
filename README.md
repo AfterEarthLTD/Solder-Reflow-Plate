@@ -2,7 +2,7 @@
 ###### By AfterEarth Ltd
 
 ## Versions
-- [70mm x 50mm](link) (Ver 2.3)
+- [70mm x 50mm](link) (Ver 2.4)
   - 12VDC ~4A peak
   - 5.5mm x 2.1mm Barrel Jack
   - 0.91" OLED Display
@@ -16,7 +16,7 @@ Regular soldering jogs small components and needs lots of flux.
 Hot air damages plastics. 
 Hot plates are expensive and can be big wastes of space. 
 
-"But you're a nerd" I hear you cry, "why don't you DIY a solution?".
+*"But you're a nerd"* I hear you cry, *"why don't you DIY a solution?"*.
 
 [Electronoobs](https://www.youtube.com/channel/UCjiVhIvGmRZixSzupD0sS9Q) shows a great DIY solution using an old clothes iron hot plate. 
 You can watch his video [here.](https://www.youtube.com/watch?v=C7blZigaaaA)
