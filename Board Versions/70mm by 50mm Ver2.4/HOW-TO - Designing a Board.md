@@ -1,5 +1,4 @@
 # **Solder Reflow Plate - 70mm by 50mm**
-###### By AfterEarth Ltd
 
 ## How-To - Designing a board
 Designing a solder reflow board is relatively simple. They consist of

@@ -1,5 +1,4 @@
 # **Solder Reflow Plate - 70mm by 50mm**
-###### By AfterEarth Ltd
 
 ## How-To - Programming the Board
 This Solder Reflow Plate has been specifically designed to be Arduino based and easily programmed through the Arduino IDE or any other similar environment.
