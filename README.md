@@ -2,9 +2,9 @@
 ###### By AfterEarth Ltd
 
 ## Versions
-- [70mm x 50mm](link) (Ver 2.4)
-  - 12VDC ~4A peak
-  - 5.5mm x 2.1mm Barrel Jack
+- [70mm x 50mm](/Board Versions/70mm by 50mm Ver2.4) (Ver 2.4)
+  - 12VDC (5A Minimum)
+  - 5.5mm x 2.5mm Barrel Jack
   - 0.91" OLED Display
 
 
@@ -29,8 +29,8 @@ And so, this nerd bestows upon the world his project, fully open-source and hack
 Here's hoping that it may be used to develop skills, build custom circuit boards, and make quality designs possible to all!
 
 ## Purchase
-- [Amazon Purchase Link](link)
-- [Ebay Purchase Link](link)
+- Purchase will be available soon!
+- There is a worldwide shortage of ATmega Microcontrollers. Once available I will setup eBay and Amazon links.
 
 ## License
 All parts of this project are covered by a [MIT license](LICENSE). 
