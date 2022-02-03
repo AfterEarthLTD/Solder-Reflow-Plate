@@ -37,7 +37,7 @@ Follow the following rough guidance to get you on your way.
 - If not, use a fine pointed soldering iron to dab solder the smaller components.
 - More heat will be needed to solder the larger components, especially the large tab of the MOSFET.
 - Check for good solder joints and that there are no shorts, especially around the microcontroller.
-- Move onto the through-hole components. The switches need to be checked for polarity before fitting else they will confuse the software on first start-up.
+- Move onto the through-hole components. The switches need to be checked for polarity before fitting else they will confuse the software on first start-up. Fit them with the notch pointing towards the OLED.
 - Lots of heat will be needed for the ground connections on the input jack.
 - Makes sure to solder the temperature chip as close to the board as possible to ensure it best follows the temperature of the plate.
 

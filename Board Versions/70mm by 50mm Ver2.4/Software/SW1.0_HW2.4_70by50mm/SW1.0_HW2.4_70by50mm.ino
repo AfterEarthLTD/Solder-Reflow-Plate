@@ -53,7 +53,7 @@ byte thicknessIndex = 0;
 byte thicknessIndexAddr = 0;
 
 //Temperature Info
-byte maxTempArray[] = { 140, 150, 160, 170, 180, 190, 200 };
+byte maxTempArray[] = { 140, 150, 160, 170, 180 };
 byte maxTempIndex = 0;
 byte tempIndexAddr = 1;
 
@@ -151,7 +151,7 @@ void setup() {
   maxTempIndex = EEPROM.read(tempIndexAddr) % sizeof(maxTempArray);
   thicknessIndex = EEPROM.read(thicknessIndexAddr) % thicknessLength; 
 
-  //Enable Fast PWM
+  //Enable Fast PWM with no prescaler
   TCCR2A = _BV(COM2A1) | _BV(COM2B1) | _BV(WGM21) | _BV(WGM20);
   TCCR2B = _BV(CS20);
 
@@ -269,9 +269,9 @@ bool heat(float thick, byte maxTemp) {
    *  to 'maxTemp'. Then descent to room temperature. 
    */
   //byte maxTemp; //Declared in function call
-  byte maxPWM = 0.75 * maxTemp; //Temperatures (in PWM / 255) influenced by paste temperature
+  byte maxPWM = 0.70 * maxTemp; //Temperatures (in PWM / 255) influenced by paste temperature
   byte warmUpTemp = 0.75 * maxTemp;
-  byte warmUpPWM = 0.75 * warmUpTemp;
+  byte warmUpPWM = 0.72 * warmUpTemp;
   unsigned long peakDelay = thick * 5; //seconds - Influenced by board thickness
   bool peak = false; //Used to manage the stage of the profile (false = Not at peak, true = At peak)
   unsigned long eTime = (millis() / 1000) + (8*60); //Used to store the end time of the heating process, limited to 8 mins
@@ -314,13 +314,15 @@ bool heat(float thick, byte maxTemp) {
       peakDelay = peakDelay + (millis() / 1000);
     }
     else if (peak == true && (millis() / 1000) < peakDelay) { //Hold at maximum temp 
-      if (t <= maxTemp) { pwmVal++; }
-      else { pwmVal--; }
+      //if (t <= maxTemp) { pwmVal++; }
+      //else { pwmVal--; }
+      if (v < vMin && pwmVal > 1) { pwmVal = pwmVal - 2; } //Reduce PWM Value if V drops too low but not unless it is still above 1 (avoid overflow/underflow)
     }
     else { //Heating Complete, return
       analogWrite(mosfet, 0);
       break;
     }
+    if (pwmVal > maxPWM ) { pwmVal = maxPWM; } //Catch incase of runaway 
 
     //MOSFET Control
     analogWrite(mosfet, pwmVal);
@@ -487,10 +489,10 @@ void completed() {
 
 float getTemp(){
   float t = 0;
-  for (byte i = 0; i < 20; i++){ //Poll temp reading 20 times
+  for (byte i = 0; i < 100; i++){ //Poll temp reading 100 times
     t = t + analogRead(temp);
   }
-  return ((t / 20) * -1.46) + 434; //Average, convert to C, and return
+  return ((t / 100) * -1.46) + 434; //Average, convert to C, and return
 }
 
 float getVolts(){

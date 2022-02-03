@@ -2,7 +2,7 @@
 ###### By AfterEarth Ltd
 
 ## Versions
-- [70mm x 50mm](/Board Versions/70mm by 50mm Ver2.4) (Ver 2.4)
+- 70mm x 50mm (Ver 2.4)
   - 12VDC (5A Minimum)
   - 5.5mm x 2.5mm Barrel Jack
   - 0.91" OLED Display
