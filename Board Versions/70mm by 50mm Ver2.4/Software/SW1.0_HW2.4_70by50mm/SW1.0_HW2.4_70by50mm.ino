@@ -46,12 +46,6 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1); //Create Displ
 #define temp 16   //A2
 #define vcc 14    //A0
 
-//Thickness Info
-float thicknessArray[] = { 0.4, 0.6, 0.8, 1.0, 1.2, 1.6, 2.0 };
-byte thicknessLength = 7; //Length of array, must be updated as cannot do in code (array is float)
-byte thicknessIndex = 0;
-byte thicknessIndexAddr = 0;
-
 //Temperature Info
 byte maxTempArray[] = { 140, 150, 160, 170, 180 };
 byte maxTempIndex = 0;
@@ -149,7 +143,6 @@ void setup() {
 
   //Pull saved values from EEPROM
   maxTempIndex = EEPROM.read(tempIndexAddr) % sizeof(maxTempArray);
-  thicknessIndex = EEPROM.read(thicknessIndexAddr) % thicknessLength; 
 
   //Enable Fast PWM with no prescaler
   TCCR2A = _BV(COM2A1) | _BV(COM2B1) | _BV(WGM21) | _BV(WGM20);
@@ -191,7 +184,7 @@ void main_menu() {
     if(!digitalRead(upsw) || !digitalRead(dnsw)) { //If either button pressed
       delay(100);
       if(!digitalRead(upsw) && !digitalRead(dnsw)) { //If both buttons pressed
-        if(!heat(thicknessArray[thicknessIndex], maxTempArray[maxTempIndex])) {
+        if(!heat(maxTempArray[maxTempIndex])) {
           cancelledPB();
           main_menu();
         }
@@ -201,13 +194,13 @@ void main_menu() {
           main_menu();
         }
       }
-      if(!digitalRead(upsw)) { //If upper button pressed
-        maxTempIndex = ( maxTempIndex + 1 ) % sizeof(maxTempArray);
-          EEPROM.update(tempIndexAddr, maxTempIndex);
+      if(!digitalRead(upsw) && maxTempIndex < sizeof(maxTempArray) - 1) { //If upper button pressed
+        maxTempIndex++;
+        EEPROM.update(tempIndexAddr, maxTempIndex);
       }
-      if(!digitalRead(dnsw)) { //If lower button pressed
-          thicknessIndex = ( thicknessIndex + 1 ) % thicknessLength;
-          EEPROM.update(thicknessIndexAddr, thicknessIndex);
+      if(!digitalRead(dnsw) && maxTempIndex > 0) { //If lower button pressed
+        maxTempIndex--;
+        EEPROM.update(tempIndexAddr, maxTempIndex);
       }
     }
 
@@ -217,9 +210,9 @@ void main_menu() {
       display.print(F("PRESS BUTTONS"));
       display.drawLine( 3, 12, 79, 12, SSD1306_WHITE); 
       display.setCursor(3,14);
-      display.print(F(" Change temp"));
+      display.print(F(" Change  MAX"));
       display.setCursor(3,22);
-      display.print(F("and thickness"));
+      display.print(F(" Temperature"));
     }
     else {
       display.setCursor(3,4);
@@ -231,21 +224,16 @@ void main_menu() {
     x = ( x + 1 ) % y; //Display change increment and modulus
     
     //Update Display (right-side)
-    display.setCursor(95,0);
+    display.setCursor(95,6);
     display.print(F("TEMP"));
-    display.setCursor(95,8);
+    display.setCursor(95,18);
     display.print(maxTempArray[maxTempIndex]);
     display.print(F("C"));
-    display.setCursor(92,16);
-    display.print(F("THICK"));
-    display.setCursor(91,24);
-    display.print(thicknessArray[thicknessIndex],1);
-    display.print(F("mm"));
     display.display();
   }
 }
 
-bool heat(float thick, byte maxTemp) {
+bool heat(byte maxTemp) {
   //Debounce
   while(!digitalRead(upsw) || !digitalRead(dnsw)) {  }
   
@@ -255,14 +243,11 @@ bool heat(float thick, byte maxTemp) {
   display.setCursor(22,4);
   display.print(F("HEATING"));
   display.setTextSize(1);
-  display.setCursor(17,24);
-  display.print(thick,1);
-  display.print(F("mm"));
-  display.setCursor(84,24);
+  display.setCursor(52,24);
   display.print(maxTemp);
   display.print(F("C"));
   display.display();
-  delay(2000);
+  delay(3000);
 
   //Heater Control Variables
   /*  Heater follows industry reflow graph. Slow build-up to 'warmUp' temp. Rapid ascent
@@ -272,12 +257,10 @@ bool heat(float thick, byte maxTemp) {
   byte maxPWM = 0.70 * maxTemp; //Temperatures (in PWM / 255) influenced by paste temperature
   byte warmUpTemp = 0.75 * maxTemp;
   byte warmUpPWM = 0.72 * warmUpTemp;
-  unsigned long peakDelay = thick * 5; //seconds - Influenced by board thickness
-  bool peak = false; //Used to manage the stage of the profile (false = Not at peak, true = At peak)
-  unsigned long eTime = (millis() / 1000) + (8*60); //Used to store the end time of the heating process, limited to 8 mins
   float t; //Used to store current temperature
   float v; //Used to store current voltage
   byte pwmVal = 0; //PWM Value applied to MOSFET
+  unsigned long eTime = (millis() / 1000) + (8*60); //Used to store the end time of the heating process, limited to 8 mins
 
   //Other control variables
   int x = 0;  //Heat Animate Counter
@@ -301,21 +284,12 @@ bool heat(float thick, byte maxTemp) {
     v = getVolts();
 
     //Reflow Profile
-    if (t < warmUpTemp && peak == false) { //Warm Up Section
+    if (t < warmUpTemp) { //Warm Up Section
       if (pwmVal != warmUpPWM) { pwmVal++; } //Slowly ramp to desired PWM Value
       if (v < vMin && pwmVal > 1) { pwmVal = pwmVal - 2; } //Reduce PWM Value if V drops too low but not unless it is still above 1 (avoid overflow/underflow)
     }
-    else if (t < maxTemp && peak == false) { //Push to maximum temp
+    else if (t < maxTemp) { //Push to maximum temp
       if (pwmVal != maxPWM) { pwmVal++; } //Slowly ramp to desired PWM Value
-      if (v < vMin && pwmVal > 1) { pwmVal = pwmVal - 2; } //Reduce PWM Value if V drops too low but not unless it is still above 1 (avoid overflow/underflow)
-    }
-    else if (t >= maxTemp && peak == false) { //Setup the hold at maximum temp
-      peak = true;
-      peakDelay = peakDelay + (millis() / 1000);
-    }
-    else if (peak == true && (millis() / 1000) < peakDelay) { //Hold at maximum temp 
-      //if (t <= maxTemp) { pwmVal++; }
-      //else { pwmVal--; }
       if (v < vMin && pwmVal > 1) { pwmVal = pwmVal - 2; } //Reduce PWM Value if V drops too low but not unless it is still above 1 (avoid overflow/underflow)
     }
     else { //Heating Complete, return
