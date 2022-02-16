@@ -2,6 +2,12 @@
 
 ###### By AfterEarth Ltd
 
+## As Seen On GreatScott! 
+
+This project has recently featured on a DIY or BUY GreatScott! video.
+
+Check it out here - [The Best way to reflow solder? Hot Plate to the rescue! DIY or Buy](https://www.youtube.com/watch?v=QarizoUnRfk)
+
 ## Versions
 
 - 70mm x 50mm (Ver 2.4)
