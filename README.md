@@ -38,7 +38,7 @@ Here's hoping that it may be used to develop skills, build custom circuit boards
 
 ## Purchase
 
-- Register your email address at [www.solderreflowplate.co.uk](www.solderreflowplate.co.uk) to know when it is available to buy!
+- Register your email address at [www.solderreflowplate.co.uk](https://www.solderreflowplate.co.uk) to know when it is available to buy!
 - There is a worldwide shortage of ATmega328p Microcontrollers. I'm currently working on a small redesign for a more readily available chip.
 - Purchase will be available soon!
 
