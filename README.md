@@ -12,12 +12,21 @@ Check it out here - [The Best way to reflow solder? Hot Plate to the rescue! DIY
 
 Join the [DISCORD!](https://discord.gg/T9dxeRmY)
 
+Checkout the new Ver 3.0 design. Very similar to Ver 2.4 but now comes with ATmega4809 as its availability is much better than the 328p at the moment. Code is still in development but the board designs are available in the Board Versions Folder.
+
 ## Versions
 
 - 70mm x 50mm (Ver 2.4)
   - 12VDC (5A Minimum)
   - 5.5mm x 2.5mm Barrel Jack
   - 0.91" OLED Display
+  - ATmega328p Microprocessor
+
+- 70mm x 50mm (Ver 3.0) **NEW**
+  - 12VDC (5A Minimum)
+  - 5.5mm x 2.5mm Barrel Jack
+  - 0.91" OLED Display
+  - ATmega4809 Microprocessor
 
 ## About the Project
 
