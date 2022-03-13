@@ -56,7 +56,7 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1); //Create Displ
 #error Too many voltage readings for average.
 #endif
 #if NUM_TEMP_AVGS > sizeof(uint8_t)
-#error Too many voltage readings for average.
+#error Too many temperature readings for average.
 #endif
 #if NUM_TEMP_AVGS > sizeof(uint8_t)
 #error Too many switch readings for average.
