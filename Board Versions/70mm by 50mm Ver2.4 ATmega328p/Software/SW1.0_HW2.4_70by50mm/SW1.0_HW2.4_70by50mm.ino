@@ -29,33 +29,50 @@
 #include <Adafruit_SSD1306.h>
 #include <EEPROM.h>
 
-//Version Definitions
+/* Definintions */
+// Version Definitions
 static const PROGMEM float hw = 2.4;
 static const PROGMEM float sw = 1.0;
 
-//Screen Definitions
+// Screen Definitions
 #define SCREEN_WIDTH 128
 #define SCREEN_HEIGHT 32
 #define SCREEN_ADDRESS 0x3C   //I2C Address
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1); //Create Display
 
-//Pin Definitions
-#define mosfet 3
-#define upsw 6
-#define dnsw 5
-#define temp 16   //A2
-#define vcc 14    //A0
+// Pin Definitions
+#define mosfet 3  // (output)
+#define upsw 6    // (input)
+#define dnsw 5    // (input)
+#define temp 16   //A2 (input)
+#define vcc 14    //A0 (input)
 
-//Temperature Info
+// Other Definitions
+#define NUM_VOLT_AVGS 32
+#define NUM_TEMP_AVGS 100
+#define NUM_SWITCH_READINGS 32
+// Checks against definitions.
+#if NUM_VOLT_AVGS > sizeof(uint8_t)
+#error Too many voltage readings for average.
+#endif
+#if NUM_TEMP_AVGS > sizeof(uint8_t)
+#error Too many temperature readings for average.
+#endif
+#if NUM_TEMP_AVGS > sizeof(uint8_t)
+#error Too many switch readings for average.
+#endif
+
+/* Global Variables / Constants */
+// Temperature Info
 byte maxTempArray[] = { 140, 150, 160, 170, 180 };
 byte maxTempIndex = 0;
 byte tempIndexAddr = 1;
 
-//Voltage Measurement Info
-float vConvert = 52.00;
-float vMin = 10.50;
+// Voltage Measurement Info
+const float vConvert = 52.00;
+const float vMin = 10.50;
 
-//Solder Reflow Plate Logo
+// Solder Reflow Plate Logo
 static const uint8_t PROGMEM logo[] = { 
   0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 
   0x00, 0x00, 0x00, 0x01, 0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x1f, 0x00, 0x00, 0x00, 0x00, 0x00, 
@@ -88,7 +105,7 @@ static const uint8_t PROGMEM logo[] = {
 static const uint8_t logo_width = 128;
 static const uint8_t logo_height = 27;
 
-//Heating Animation
+// Heating Animation
 static const uint8_t PROGMEM heat_animate[] = {
   0b00000001, 0b00000000,
   0b00000001, 0b10000000,
@@ -110,7 +127,7 @@ static const uint8_t PROGMEM heat_animate[] = {
 static const uint8_t heat_animate_width = 16;
 static const uint8_t heat_animate_height = 16;
 
-//Tick
+// Tick
 static const uint8_t PROGMEM tick[] = {
   0b00000000, 0b00000100,
   0b00000000, 0b00001010,
@@ -131,46 +148,40 @@ static const uint8_t PROGMEM tick[] = {
 static const uint8_t tick_width = 16;
 static const uint8_t tick_height = 15;
 
-void setup() {
-  
-  //Pin Direction control
-  pinMode(mosfet,OUTPUT);
-  digitalWrite(mosfet,LOW);
-  pinMode(upsw,INPUT);
-  pinMode(dnsw,INPUT);
-  pinMode(temp,INPUT);
-  pinMode(vcc,INPUT);
 
-  //Pull saved values from EEPROM
-  maxTempIndex = EEPROM.read(tempIndexAddr) % sizeof(maxTempArray);
+/* Functions */
+// Debounced read of a push button.
+int readButton( int inputPin ) {
+  uint16_t temp = NUM_SWITCH_READINGS;  //div by 2
+  // Add to a variable if switch polls high, and subtract if
+  // switch polls low.
+  for(uint8_t i=0 ; i<NUM_SWITCH_READINGS ; i++){
+    if digitalRead(inputPin) {
+      temp++;
+    }
+    else{
+      temp--;
+    }
+    if( (temp < 1) || ((temp >= 2*NUM_SWITCH_READINGS)) ) {
+      break;
+    }
+  }
+  // Check to see if the switch was mostly high or mostly low.
+  if( temp < NUM_SWITCH_READINGS ) {
+    return 0;
+  }
+  // otherwise...
+  return 1;
+}
 
-  //Enable Fast PWM with no prescaler
-  TCCR2A = _BV(COM2A1) | _BV(COM2B1) | _BV(WGM21) | _BV(WGM20);
-  TCCR2B = _BV(CS20);
-
-  //Start-up Diplay
-  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
-  display.clearDisplay();
-  display.setTextSize(1);
-  display.setTextColor(SSD1306_WHITE);
-  display.setCursor(0,0);
-  display.drawBitmap(0, 0, logo, logo_width, logo_height, SSD1306_WHITE);
-  display.setCursor(80,16);
-  display.print(F("S/W V"));
-  display.print(sw, 1);
-  display.setCursor(80,24);
-  display.print(F("H/W V"));
-  display.print(hw, 1);
-  display.display();
-  delay(3000);
-
-  //Go to main menu
-  main_menu();
+// Wait for buttons to stop being pushed.
+void waitForButtonsToBeIdle( void ) {
+  while( !readButton(upsw) || !readButton(dnsw) ) {  }
 }
 
 void main_menu() {
-  //Debounce
-  while(!digitalRead(upsw) || !digitalRead(dnsw)) {  }
+  // Debounce
+  waitForButtonsToBeIdle();
   
   int x = 0;  //Display change counter
   int y = 200; //Display change max (modulused below)
@@ -180,10 +191,10 @@ void main_menu() {
     display.setTextSize(1);
     display.drawRoundRect( 0, 0, 83, 32, 2, SSD1306_WHITE);
 
-    //Button Logic
-    if(!digitalRead(upsw) || !digitalRead(dnsw)) { //If either button pressed
+    // Button Logic
+    if(!readButton(upsw) || !readButton(dnsw)) { //If either button pressed
       delay(100);
-      if(!digitalRead(upsw) && !digitalRead(dnsw)) { //If both buttons pressed
+      if(!readButton(upsw) && !readButton(dnsw)) { //If both buttons pressed
         if(!heat(maxTempArray[maxTempIndex])) {
           cancelledPB();
           main_menu();
@@ -194,17 +205,17 @@ void main_menu() {
           main_menu();
         }
       }
-      if(!digitalRead(upsw) && maxTempIndex < sizeof(maxTempArray) - 1) { //If upper button pressed
+      if(!readButton(upsw) && maxTempIndex < sizeof(maxTempArray) - 1) { //If upper button pressed
         maxTempIndex++;
         EEPROM.update(tempIndexAddr, maxTempIndex);
       }
-      if(!digitalRead(dnsw) && maxTempIndex > 0) { //If lower button pressed
+      if(!readButton(dnsw) && maxTempIndex > 0) { //If lower button pressed
         maxTempIndex--;
         EEPROM.update(tempIndexAddr, maxTempIndex);
       }
     }
 
-    //Change Display (left-side)
+    // Change Display (left-side)
     if( x < (y * 0.5)) {
       display.setCursor(3,4);
       display.print(F("PRESS BUTTONS"));
@@ -223,7 +234,7 @@ void main_menu() {
     }
     x = ( x + 1 ) % y; //Display change increment and modulus
     
-    //Update Display (right-side)
+    // Update Display (right-side)
     display.setCursor(95,6);
     display.print(F("TEMP"));
     display.setCursor(95,18);
@@ -234,10 +245,10 @@ void main_menu() {
 }
 
 bool heat(byte maxTemp) {
-  //Debounce
-  while(!digitalRead(upsw) || !digitalRead(dnsw)) {  }
+  // Debounce
+  waitForButtonsToBeIdle();
   
-  //Heating Display
+  // Heating Display
   display.clearDisplay();
   display.setTextSize(2);
   display.setCursor(22,4);
@@ -249,7 +260,7 @@ bool heat(byte maxTemp) {
   display.display();
   delay(3000);
 
-  //Heater Control Variables
+  // Heater Control Variables
   /*  Heater follows industry reflow graph. Slow build-up to 'warmUp' temp. Rapid ascent
    *  to 'maxTemp'. Then descent to room temperature. 
    */
@@ -262,28 +273,28 @@ bool heat(byte maxTemp) {
   byte pwmVal = 0; //PWM Value applied to MOSFET
   unsigned long eTime = (millis() / 1000) + (8*60); //Used to store the end time of the heating process, limited to 8 mins
 
-  //Other control variables
+  // Other control variables
   int x = 0;  //Heat Animate Counter
   int y = 80; //Heat Animate max (modulused below)
   
   while(1) {
-    //Button Control
-    if(!digitalRead(upsw) || !digitalRead(dnsw)) {
+    // Button Control
+    if(!readButton(upsw) || !readButton(dnsw)) {
       analogWrite(mosfet, 0);
       return 0;
     }
 
-    //Check Heating not taken more than 8 minutes
+    // Check Heating not taken more than 8 minutes
     if(millis() / 1000 > eTime) {
       analogWrite(mosfet, 0);
       cancelledTimer();
     }
 
-    //Measure Values
+    // Measure Values
     t = getTemp();
     v = getVolts();
 
-    //Reflow Profile
+    // Reflow Profile
     if (t < warmUpTemp) { //Warm Up Section
       if (pwmVal != warmUpPWM) { pwmVal++; } //Slowly ramp to desired PWM Value
       if (v < vMin && pwmVal > 1) { pwmVal = pwmVal - 2; } //Reduce PWM Value if V drops too low but not unless it is still above 1 (avoid overflow/underflow)
@@ -298,10 +309,10 @@ bool heat(byte maxTemp) {
     }
     if (pwmVal > maxPWM ) { pwmVal = maxPWM; } //Catch incase of runaway 
 
-    //MOSFET Control
+    // MOSFET Control
     analogWrite(mosfet, pwmVal);
 
-    //Heat Animate Control
+    // Heat Animate Control
     display.clearDisplay();
     display.drawBitmap( 0, 3, heat_animate, heat_animate_width, heat_animate_height, SSD1306_WHITE);
     display.drawBitmap( 112, 3, heat_animate, heat_animate_width, heat_animate_height, SSD1306_WHITE);
@@ -309,7 +320,7 @@ bool heat(byte maxTemp) {
     display.fillRect( 112, 3, heat_animate_width, heat_animate_height * (y - x) / y, SSD1306_BLACK);
     x = ( x + 1 ) % y; //Heat animate increment and modulus
 
-    //Update display
+    // Update display
     display.setTextSize(2);
     display.setCursor(22,4);
     display.print(F("HEATING"));
@@ -329,10 +340,10 @@ bool heat(byte maxTemp) {
 }
 
 void cancelledPB() { //Cancelled via push button
-  //Debounce
-  while(!digitalRead(upsw) || !digitalRead(dnsw)) {  }
+  // Debounce
+  waitForButtonsToBeIdle();
 
-  //Update Display
+  // Update Display
   display.clearDisplay();
   display.drawRoundRect( 22, 0, 84, 32, 2, SSD1306_WHITE );
   display.setCursor(25,4);
@@ -353,19 +364,19 @@ void cancelledPB() { //Cancelled via push button
   delay(50);
 
   //Wait to return on any button press
-  while(digitalRead(upsw) && digitalRead(dnsw)) {  }
+  while(readButton(upsw) && readButton(dnsw)) {  }
 }
 
 void cancelledTimer() { //Cancelled via 5 minute Time Limit
-  //Debounce
-  while(!digitalRead(upsw) || !digitalRead(dnsw)) {  }
+  // Debounce
+  waitForButtonsToBeIdle();
 
-  //Initiate Swap Display
+  // Initiate Swap Display
   int x = 0;  //Display change counter
   int y = 150; //Display change max (modulused below)
 
-  //Wait to return on any button press
-  while(digitalRead(upsw) && digitalRead(dnsw)) {
+  // Wait to return on any button press
+  while(readButton(upsw) && readButton(dnsw)) {
     //Update Display
     display.clearDisplay();
     display.drawRoundRect( 22, 0, 84, 32, 2, SSD1306_WHITE );
@@ -408,13 +419,13 @@ void cancelledTimer() { //Cancelled via 5 minute Time Limit
 }
 
 void coolDown() {
-  //Debounce
-  while(!digitalRead(upsw) || !digitalRead(dnsw)) {  }
+  // Debounce
+  waitForButtonsToBeIdle();
   
   float t = getTemp(); //Used to store current temperature
   
-  //Wait to return on any button press, or temp below threshold
-  while(digitalRead(upsw) && digitalRead(dnsw) && t > 45.00) {
+  // Wait to return on any button press, or temp below threshold
+  while(readButton(upsw) && readButton(dnsw) && t > 45.00) {
     display.clearDisplay();
     display.drawRoundRect( 22, 0, 84, 32, 2, SSD1306_WHITE );
     display.setCursor(25,4);
@@ -440,10 +451,10 @@ void coolDown() {
 }
 
 void completed() {
-  //Debounce
-  while(!digitalRead(upsw) || !digitalRead(dnsw)) {  }
+  // Debounce
+  waitForButtonsToBeIdle();
 
-  //Update Display
+  // Update Display
   display.clearDisplay();
   display.drawRoundRect( 22, 0, 84, 32, 2, SSD1306_WHITE );
   display.setCursor(25,4);
@@ -457,13 +468,13 @@ void completed() {
   display.drawBitmap( 112, 9, tick, tick_width, tick_height, SSD1306_WHITE);
   display.display();
 
-  //Wait to return on any button press
-  while(digitalRead(upsw) && digitalRead(dnsw)) {  }
+  // Wait to return on any button press
+  while(readButton(upsw) && readButton(dnsw)) {  }
 }
 
 float getTemp(){
   float t = 0;
-  for (byte i = 0; i < 100; i++){ //Poll temp reading 100 times
+  for (uint8_t i = 0; i < NUM_TEMP_AVGS; i++){ //Poll temp reading 100 times
     t = t + analogRead(temp);
   }
   return ((t / 100) * -1.46) + 434; //Average, convert to C, and return
@@ -471,12 +482,51 @@ float getTemp(){
 
 float getVolts(){
   float v = 0;
-  for (byte i = 0; i < 20; i++){ //Poll Voltage reading 20 times
+  for (uint8_t i = 0; i < NUM_VOLT_AVGS; i++){ //Poll Voltage reading 20 times
     v = v + analogRead(vcc);
   }
   return v / 20 / vConvert; //Average, convert to V, and return
 }
 
+
+/* Code to Run */
+// Initial Setup
+void setup() {
+  
+  //Pin Direction control
+  pinMode(mosfet,OUTPUT);
+  digitalWrite(mosfet,LOW);
+  pinMode(upsw,INPUT);
+  pinMode(dnsw,INPUT);
+  pinMode(temp,INPUT);
+  pinMode(vcc,INPUT);
+
+  // Pull saved values from EEPROM
+  maxTempIndex = EEPROM.read(tempIndexAddr) % sizeof(maxTempArray);
+
+  // Enable Fast PWM with no prescaler
+  TCCR2A = _BV(COM2A1) | _BV(COM2B1) | _BV(WGM21) | _BV(WGM20);
+  TCCR2B = _BV(CS20);
+
+  // Start-up Diplay
+  display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setTextColor(SSD1306_WHITE);
+  display.setCursor(0,0);
+  display.drawBitmap(0, 0, logo, logo_width, logo_height, SSD1306_WHITE);
+  display.setCursor(80,16);
+  display.print(F("S/W V"));
+  display.print(sw, 1);
+  display.setCursor(80,24);
+  display.print(F("H/W V"));
+  display.print(hw, 1);
+  display.display();
+  // Let user admire handywork
+  delay(3000);
+}
+
 void loop() {
-  // Not used
+  // Go to main menu
+  main_menu();
 }
