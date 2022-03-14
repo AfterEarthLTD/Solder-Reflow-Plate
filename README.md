@@ -10,7 +10,7 @@ Check it out here - [The Best way to reflow solder? Hot Plate to the rescue! DIY
 
 ## UPDATE!!!
 
-Join the [DISCORD!](https://discord.gg/T9dxeRmY)
+Join the [DISCORD!](https://discord.gg/YzhG6FcCRA)
 
 Checkout the new Ver 3.0 design. Very similar to Ver 2.4 but now comes with ATmega4809 as its availability is much better than the 328p at the moment. Code is still in development but the board designs are available in the Board Versions Folder.
 
