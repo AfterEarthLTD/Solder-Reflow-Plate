@@ -64,3 +64,7 @@ Feel free to download, customise, hack, and commercialise to your nerdy heart's 
 Want the **easy** life?!
 **Purchase** the default design above!
 Its fully functional, cheaper than customising, and helps to feed the creator's caffeine addiction 🙃
+
+## Board Variants
+
+Check out the [variants.md](./variants.md) file for variations on the original boards designed by AfterEarthLTD
