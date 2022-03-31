@@ -408,7 +408,7 @@ bool checkHeat() {
   byte warmUpPWM = 0.72 * warmUpTemp;
   float t; //Used to store current temperature
   float v; //Used to store current voltage
-  byte pwmVal = 0; //PWM Value applied to MOSFET
+  static byte pwmVal = 0; //PWM Value applied to MOSFET
 
   //Other control variables
   static int x = 0;  //Heat Animate Counter
