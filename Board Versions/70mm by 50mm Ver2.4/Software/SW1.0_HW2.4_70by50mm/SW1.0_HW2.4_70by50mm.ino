@@ -356,29 +356,34 @@ void checkState() {
 
 
 void updateIdleDisplay() {
-  const unsigned long interval = 1000;  // toggle every second
+  const unsigned long interval = 5000;  // toggle every second
   static unsigned long lastTime;
   static bool state = true;
 
+  display.clearDisplay();
+  display.drawRoundRect( 0, 0, 83, 32, 2, SSD1306_WHITE);
+
   if ( millis() - lastTime >= interval ) {
-    //Change Display (left-side)
-    if ( state ) {
-      display.setCursor(3, 4);
-      display.print(F("PRESS BUTTONS"));
-      display.drawLine( 3, 12, 79, 12, SSD1306_WHITE);
-      display.setCursor(3, 14);
-      display.print(F(" Change  MAX"));
-      display.setCursor(3, 22);
-      display.print(F(" Temperature"));
-    }
-    else {
-      display.setCursor(3, 4);
-      display.print(F("HOLD  BUTTONS"));
-      display.drawLine( 3, 12, 79, 12, SSD1306_WHITE );
-      display.setCursor(3, 18);
-      display.print(F("Begin Heating"));
-    }
+    lastTime = millis();
     state = !state;
+  }
+
+  //Change Display (left-side)
+  if ( state ) {
+    display.setCursor(3, 4);
+    display.print(F("PRESS BUTTONS"));
+    display.drawLine( 3, 12, 79, 12, SSD1306_WHITE);
+    display.setCursor(3, 14);
+    display.print(F(" Change  MAX"));
+    display.setCursor(3, 22);
+    display.print(F(" Temperature"));
+  }
+  else {
+    display.setCursor(3, 4);
+    display.print(F("HOLD  BUTTONS"));
+    display.drawLine( 3, 12, 79, 12, SSD1306_WHITE );
+    display.setCursor(3, 18);
+    display.print(F("Begin Heating"));
   }
 
   //Update Display (right-side)
