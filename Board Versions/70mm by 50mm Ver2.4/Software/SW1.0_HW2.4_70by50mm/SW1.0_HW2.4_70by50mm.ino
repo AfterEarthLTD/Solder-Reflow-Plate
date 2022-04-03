@@ -485,7 +485,7 @@ bool checkHeat() {
   //basic check to see if the temp is rising
   if ( millis() - heatRiseTime >= riseTimeInterval ) {
     heatRiseTime = millis();
-    if(previousRiseTemp-t < 2.0 ) {
+    if(t-previousRiseTemp < 2.0 ) {
         noTempRise = true;
     } else {
       previousRiseTemp = t;
