@@ -233,13 +233,6 @@ void beginState( int state ) {
     case COOL_DOWN:
       // begin cool down
       digitalWrite(mosfet, LOW);
-      display.clearDisplay();
-      display.drawRoundRect( 22, 0, 84, 32, 2, SSD1306_WHITE );
-      display.setCursor(25, 4);
-      display.print(F("  COOL DOWN"));
-      display.drawLine( 25, 12, 103, 12, SSD1306_WHITE );
-      display.setCursor(25, 14);
-      display.println("  Still Hot");
       break;
 
     case COMPLETE:
@@ -588,7 +581,13 @@ bool checkCoolDown() {
   if ( t < 45.0) {
     return true;  // all done
   }
-
+  display.clearDisplay();
+  display.drawRoundRect( 22, 0, 84, 32, 2, SSD1306_WHITE );
+  display.setCursor(25, 4);
+  display.print(F("  COOL DOWN"));
+  display.drawLine( 25, 12, 103, 12, SSD1306_WHITE );
+  display.setCursor(25, 14);
+  display.println("  Still Hot");
   if ( t >= 100 ) {
     display.setCursor(49, 22);
   }
