@@ -1,5 +1,5 @@
  /* Solder Reflow Plate Sketch
- *  H/W - Ver 2.4
+ *  H/W - Ver 3.0
  *  S/W - Ver 1.0
  *  by Chris Halsall     */
 
