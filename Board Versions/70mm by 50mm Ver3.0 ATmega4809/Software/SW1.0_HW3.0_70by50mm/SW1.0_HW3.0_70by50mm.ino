@@ -40,8 +40,8 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1); //Create Displ
 
 //Pin Definitions
 #define mosfet PIN_PC3
-#define upsw PIN_PD0
-#define dnsw PIN_PD1
+#define upsw PIN_PD1
+#define dnsw PIN_PD0
 #define temp PIN_PF5 
 #define vcc PIN_PF3
 
