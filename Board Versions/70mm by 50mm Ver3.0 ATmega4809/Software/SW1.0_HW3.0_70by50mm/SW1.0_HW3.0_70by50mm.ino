@@ -49,7 +49,7 @@ Bounce2::Button upButton;
 Bounce2::Button downButton;
 
 //Temperature Info
-byte maxTempArray[] = { 140, 150, 160, 170, 180 };
+byte maxTempArray[] = { 140, 150, 160, 170, 180, 190, 200, 210, 220 };
 byte maxTempIndex = 0;
 byte tempIndexAddr = 1;
 
