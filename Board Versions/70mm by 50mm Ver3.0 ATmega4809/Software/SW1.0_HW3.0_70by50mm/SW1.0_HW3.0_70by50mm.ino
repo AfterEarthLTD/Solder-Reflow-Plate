@@ -217,7 +217,7 @@ void main_menu() {
     //Change Display (left-side)
     if( x < (y * 0.5)) {
       display.setCursor(3,4);
-      display.print(F("PRESS BUTTONS"));
+      display.print(F("SINGLE BUTTON"));
       display.drawLine( 3, 12, 79, 12, SSD1306_WHITE); 
       display.setCursor(3,14);
       display.print(F(" Change  MAX"));
@@ -226,7 +226,7 @@ void main_menu() {
     }
     else {
       display.setCursor(3,4);
-      display.print(F("HOLD  BUTTONS"));
+      display.print(F("BOTH  BUTTONS"));
       display.drawLine( 3, 12, 79, 12, SSD1306_WHITE ); 
       display.setCursor(3,18);
       display.print(F("Begin Heating"));
