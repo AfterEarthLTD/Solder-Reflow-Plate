@@ -4,23 +4,21 @@
  *  by Chris Halsall     */
 
 /* To prepare
- * 1) Install MiniCore in additional boards; (copy into File->Preferences->Additional Boards Manager URLs)
- *     https://mcudude.github.io/MiniCore/package_MCUdude_MiniCore_index.json
- * 2) Then add MiniCore by searching and installing (Tools->Board->Board Manager)
- * 3) Install Adafruit_GFX and Adafruit_SSD1306 libraries (Tools->Manage Libraries)
+ * 1) Install MegaCoreX via Board Manager; See https://github.com/MCUdude/MegaCoreX
+ * 2) Install Bounce2, Adafruit_GFX and Adafruit_SSD1306 libraries (Tools->Manage Libraries)
+ * 3) Have a UPDI programmer. eg. Arduino Nano with JTAG2UPDI loaded - https://github.com/ElTangas/jtag2updi
  */
 
 /* To program
  *  1) Select the following settings under (Tools)
- *      Board->Minicore->Atmega328 
- *      Clock->Internal 8MHz
+ *      Board->MegaCoreX->Atmega4209 
+ *      Clock->Internal 16MHz
  *      BOD->BOD 2.7V
  *      EEPROM->EEPROM retained
- *      Compiler LTO->LTO Disabled
- *      Variant->328P / 328PA
+ *      Pinout->48 pin Standard
+ *      Reset Pin->Reset
  *      Bootloader->No bootloader
- *  2) Set programmer of choice, e.g.'Arduino as ISP (MiniCore)', 'USB ASP', etc, and set correct port.
- *  3) Burn bootloader (to set fuses correctly)
+ *  2) Set programmer of choice, e.g.'JTAG2UPDI', 'Atmel ICE', etc, and set correct port.
  *  4) Compile and upload
  */
 
@@ -31,7 +29,7 @@
 #include <Bounce2.h>
 
 //Version Definitions
-static const PROGMEM float hw = 2.4;
+static const PROGMEM float hw = 3.0;
 static const PROGMEM float sw = 1.0;
 
 //Screen Definitions
