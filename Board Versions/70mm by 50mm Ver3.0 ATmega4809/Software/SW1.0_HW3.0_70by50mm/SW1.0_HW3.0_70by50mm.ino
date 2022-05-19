@@ -279,7 +279,7 @@ bool heat(byte maxTemp) {
     downButton.update();
     
     //Button Control
-    if(downButton.pressed() || upButton.pressed()) {
+    if(downButton.pressed() && upButton.pressed()) {
       analogWrite(mosfet, 0);
       return 0;
     }
