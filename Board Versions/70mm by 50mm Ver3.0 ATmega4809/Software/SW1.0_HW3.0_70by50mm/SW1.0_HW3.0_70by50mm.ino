@@ -337,6 +337,9 @@ bool heat(byte maxTemp) {
     display.print(F("C"));
     display.display();
   }
+
+  // Tell everyone we were successful!
+  return 1;
 }
 
 void cancelledPB() { //Cancelled via push button
