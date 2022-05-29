@@ -10,11 +10,14 @@ Firstly, download the Gerber files and Bill of Materials.
 While you are there, if you download the Pick and Place Doc you can have select board manufacturers populate the boards for you, normally at extra cost.
 Find yourself a board manufacturer and upload the Gerber files and Bill of Materials.
 I have used JLCPCB and NextPCB, both have given great quality boards and I've never had a problem with either.
+
 Use the default board settings
+
 - PCB thickness = 1.6mm
 - Copper Weight = 1oz
 - Material = FR-4
 - Colour to your liking
+
 It can make life easier picking up a stencil to help you solder the components on later.
 Order as many boards as you like ensuring you order the materials too.
 Delivery from China nrormally takes between 2 and 6 weeks.
