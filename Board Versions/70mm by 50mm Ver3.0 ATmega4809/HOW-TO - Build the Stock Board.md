@@ -5,6 +5,10 @@ Building this solder reflow plate is a intermediate level task.
 While not overly complicated it still features many small surface mount components and a few polarity sensitive components.
 Future versions of the board are being developed to make home building easier to accomplish.
 
+## WARNING!!!
+
+This design lacks safety features to limit the amount of power it may draw or the temperature it may reach and there are other issues with the electrical design. With a suitable power supply and as long as the software doesn't have any major bugs, it can be operated without issue but there is a real risk that it could start a fire in the event of a software bug or other fault. Do not leave it unsupervised while connected to power.
+
 #### Preparations
 Firstly, download the Gerber files and Bill of Materials.
 While you are there, if you download the Pick and Place Doc you can have select board manufacturers populate the boards for you, normally at extra cost.
