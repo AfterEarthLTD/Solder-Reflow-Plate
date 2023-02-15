@@ -29,9 +29,9 @@ You should now have a UPDI programmer ready to go.
 ### Program
 1) Connect your UPDI programmer to the UPDI pins on the Solder Reflow board - the 3 pin header on the right side of the board. You need to connect the top pin to ground and the centre pin to the UPDI pin on your programmer (PD6 is using JTAG2UPDI). If using JTAG2UPDI, make sure you have 4.7k of resistance between the PD6 and UPDI pins. The 5V pin is not used and should be left unconnected.
 2) Select the following settings under the Tools menu:
-- Board->MegaCoreX->Atmega4209 
+- Board->MegaCoreX->Atmega4809 
 - Clock->Internal 16MHz
-- BOD->BOD 2.7V
+- BOD->BOD 2.6V
 - EEPROM->EEPROM retained
 - Pinout->48 pin Standard
 - Reset Pin->Reset

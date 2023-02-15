@@ -11,9 +11,9 @@
 
 /* To program
  *  1) Select the following settings under (Tools)
- *      Board->MegaCoreX->Atmega4209 
+ *      Board->MegaCoreX->Atmega4809 
  *      Clock->Internal 16MHz
- *      BOD->BOD 2.7V
+ *      BOD->BOD 2.6V
  *      EEPROM->EEPROM retained
  *      Pinout->48 pin Standard
  *      Reset Pin->Reset
