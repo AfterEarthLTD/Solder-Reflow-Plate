@@ -145,8 +145,8 @@ void setup() {
   maxTempIndex = EEPROM.read(tempIndexAddr) % sizeof(maxTempArray);
 
   //Enable Fast PWM with no prescaler
-  TCCR2A = _BV(COM2A1) | _BV(COM2B1) | _BV(WGM21) | _BV(WGM20);
-  TCCR2B = _BV(CS20);
+  //TCCR2A = _BV(COM2A1) | _BV(COM2B1) | _BV(WGM21) | _BV(WGM20);
+  //TCCR2B = _BV(CS20);
 
   //Start-up Diplay
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);

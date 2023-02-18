@@ -10,7 +10,10 @@ This design lacks safety features to limit the amount of power it may draw or th
 
 - Safety!!! What can happen with your design in the event of a hardware or software fault? Can it draw enough power to catch fire? At a minimum, some kind of overcurrent protection like a fuse would be prudent.
 - Heating element resistance. The original board layouts have very low resistance that typically ends up around 0.9 ohms or so. A higher resistance that's closer to your design maximum power at 100% duty cycle would help ensure that the device cannot draw excessive currents, overheat and catch fire in the event of a fault. Since the design goal was about 60W, something closer to 2 ohms at peak temperatures would be more prudent to help prevent large overcurrent faults. For about 2.1 ohms at 180 celsius, you'd want about 1.3 ohms at 20 celsius.
-- Input capacitance and PWM frequency. The original design left the PWM frequency at the default value of 490Hz. That, coupled with the relatively low input capacitance of 100uF meant that at all but the lowest duty cycles, the input capacitance was discharged and the supply exposed to the full load of the heating element. This is not an issue if you're working with a 20A supply, but if you're working on the assumption that 5A is enough, you're likely overloading your power supply. Firmware should be written to use much higher PWM frequency in conjunction with much larger input capacitance to ensure effective buffering between the supply and the heating element load.
+- Input capacitance and PWM frequency. The input capacitance is far too low for the load and PWM frequencies used.
+  - The current v3.0 firmware uses the default PWM frequency of 490Hz, which generally relies on the power supply to support the load for the vast majority of the MOSFET on-time. Given the heating element resistance usually comes in at around 0.9 ohms, you need a power supply that can handle 15A or so to be safe. Lower spec supplies may work ok, but are likely being overloaded, so you might blow a fuse or worse.
+  - The current v2.4 firmware sets the prescaler to 1, giving a PWM frequency of over 31kHz. In theory this should be better, but the input capacitance is still far too low. This means that the power supply still needs to support the majority of the load current and with the ripple current still being large but charge and discharge being far more often, power dissipation in the input capacitance goes up by 1 or 2 orders of magnitude. If you've noticed your input capacitor getting hot enough to burn you, this is why. I've commented out the lines that raise the PWM frequency. This avoids the input capacitor getting too hot but again requires that your power supply can support the load.
+  - Since the input capacitors are largely ineffectual, they could possibly be removed, although I have not and probably won't try this.
 - Thermal gradients. The standard layout has a uniform track layout across the entire board, but since you lose heat much more easily at the edge than in the centre, thermal gradients of 50 celsius between the centre of the board and the edge are not uncommon. Having thinner tracks near the edge can help reduce this effect.
 - Thermal sensing. The temperature sensor off the side of the hotplate is ineffective at accurately sensing hotplate temperature and will likely be 20-30 celsius lower than the temperature at the edge of the board, even if you install it as close to the board as possible. Ideally, the sensor setup should measure temperature within the hotplate area itself or on the board being reflowed. Suggested approaches are using the heating element itself as the sensor, using a remote sensor that can be attached to the board being reflowed or possibly using some kind of thermography or IR sensor.
 
@@ -29,7 +32,7 @@ Checkout the new Ver 3.0 design. Very similar to Ver 2.4 but now comes with ATme
   - ATmega328p Microprocessor
 
 - 70mm x 50mm (Ver 3.0) **NEW**
-  - 12VDC (5A Minimum)
+  - 12VDC (15A Minimum)
   - 5.5mm x 2.5mm Barrel Jack
   - 0.91" OLED Display
   - ATmega4809 Microprocessor
