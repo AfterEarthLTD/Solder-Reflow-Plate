@@ -40,3 +40,6 @@ You should now have a UPDI programmer ready to go.
 4) Set the programmer of your choice. eg. JTAG2UPDI, Atmel ICE, etc
 5) Compile and upload.
 
+### PWM Frequency
+
+By default, the PWM control of the heating element operates at the default PWM frequency used by Arduinos of around 490Hz. This can be increased to roughly 63kHz by uncommenting the definition of the FAST_PWM macro. Note that with current hardware designs, this will likely result in overheating of the input capacitor. The circuit requires redesign to correct this fault. If FAST_PWM is enabled, this will also modify the messages on the screen to remind the user that the input capacitor may get hot.
