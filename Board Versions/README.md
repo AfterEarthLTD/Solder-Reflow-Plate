@@ -26,19 +26,21 @@ $$ V_{operating} = V_{supply} \times D_{max} \times \eta $$
 
 $$ 19 \times 0.95 \times 0.95 = 17.15 V $$
 
-We know that:
+From ohm's law, we have that the power dissipated in the heating element is:
 
-  P = V^2 / R
+$$ P_{heating element} = \frac{V_{operating}^2}{R_{heating element}} $$
 
-So if we square the voltage and divide by the maximum output power, we get a resistance for the hotplate to achieve that power when driven by that voltage. So:
+Rearranging to calculate required resistance from voltage and power:
 
-  17.15 x 17.15 / 90 = ~3.27 ohms
+$$ R_{heating element} = \frac{V_operating}^2}{P_{heating element}} $$
+
+$$ \frac{17.15 \times 17.15}{90} = 3.27 \Omega $$
 
 ## Resistance Versus Temperature ##
 
 We need to allow for the fact that our heating element's resistance will increase as it gets hotter. In fact, this is one good option you can use to determine the temperature of the hotplate if your control scheme has access to accurate real-time voltage and current information from the hotplate. It's impractical to try to be overly precise as there can be substantial variation between boards in a batch as well as process variation between batches and between manufacturers. Because of this, it's probably not worth more than a rough approximation here. At reflow temperatures, your heating element's resistance will be roughly 70% higher than it will be at ambient temperatures. I typically take the resistance value calculated above as the resistance of the heating element at peak temperature (ie. when "hot"), so to determine the target resistance for my heating element at ambient temperatures, I take the number from above and divide it by 1.7.
 
-  3.27 ohms / 1.7 = ~1.9 ohms
+$$ \frac{3.27 \Omega}{1.7} = 1.92 \Omega $$
 
 That's the value I design for in my heating element.
 
@@ -48,7 +50,7 @@ Some PCB design software may provide tools for estimating the resistance of PCB 
 
 To calculate the resistance of a linear trace of constant width, you would use the formula:
 
-  R = rho x length / width / thickness
+$$ R = \frac{\Rho \times length}{width \times thickness} $$
 
 where rho is the resistivity of the material in ohm-m and length, width and thickness are all distances measured in *metres*. For 1 oz copper, the theoretical thickness of the copper foil on a PCB would be about 35 x 10^-6m thick (ie. 0000035m thick). For annealed copper, rho is about 1.72 x 10^-8 ohm-m. So for a copper trace 1.5mm wide, 70mm long in 1 oz copper, we would have R = 1.72 x 10^-8 x 0.07 / 0.0015 / 0.000035 = 0.02293 or about 23 milliohms. From working with JLCPCB for some of our earlier revisions, the actual resistances seemed to suggest that the copper thickness may be closer to 29 microns (ie. 0.000029m) than the 35 microns we expect. Although I now recommend PCBWay as a better option for manufacturing hotplates, I have less experience with them so far. I think 29 microns may also be a reasonable approximation of copper thickness there, but I have had some surprising results with some of my later, more complex layouts, so maybe my expectations are wrong or some process has changed at PCBWay in recent months. Your mileage may vary. Based on this, we can proceed as follows:
 
