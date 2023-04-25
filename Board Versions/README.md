@@ -20,7 +20,7 @@ Let's assume you're designing to run from something like a laptop power brick or
 
 Before we get carried away, we also need to consider the impacts of PWM and the maximum practical duty cycle we can use. Because of a variety of factors, such as non-zero turn-on and turn-off times, it's not really practical to operate all the way up to 100% duty cycle. Realistically, the highest practical duty cycle value is likely around 95% or less. The effect of this is that our maximum operating voltage for the heating element is reduced to 95% of our power supply voltage. If you want to limit duty cycle to some lower value than 95%, then use that percentage as well.
 
-Additionally, our power conversion electronics will not be 100% efficient. For the purpose of these calculations, we're going to assume around 95% efficiency ( $ \eta $ ). This may be optimistic, so you may want to choose a lower value depending on your own experience.
+Additionally, our power conversion electronics will not be 100% efficient. For the purpose of these calculations, we're going to assume around 95% efficiency ($\eta$). This may be optimistic, so you may want to choose a lower value depending on your own experience.
 
 $$ V_{operating} = V_{supply} \times D_{max} \times \eta $$
 
@@ -52,7 +52,7 @@ To calculate the resistance of a linear trace of constant width, you would use t
 
 $$ R = \frac{\rho \times length}{width \times thickness} $$
 
-where $ \rho $ is the resistivity of the material in $ \Omega $m and length, width and thickness are all distances measured in *metres*. For 1 oz copper, the theoretical thickness of the copper foil on a PCB would be about $ 35 \times 10^-6 m $ thick (ie. 0.0000035m thick). For annealed copper, rho is about $ 1.72 \times 10^-8 \Omega m $. So for a copper trace 1.5mm wide, 70mm long in 1 oz copper, we would have
+where $\rho$ is the resistivity of the material in $\Omega$m and length, width and thickness are all distances measured in *metres*. For 1 oz copper, the theoretical thickness of the copper foil on a PCB would be about $35 \times 10^-6 m$ thick (ie. 0.0000035m thick). For annealed copper, rho is about $1.72 \times 10^-8 \Omega m$. So for a copper trace 1.5mm wide, 70mm long in 1 oz copper, we would have
 
 $$ R = \frac{1.72 \times 10^-8 \times 0.07}{0.0015 \times 0.000035} = 0.02293 \Omega $$
 
