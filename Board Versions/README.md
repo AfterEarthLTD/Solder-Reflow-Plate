@@ -20,7 +20,7 @@ Let's assume you're designing to run from something like a laptop power brick or
 
 Before we get carried away, we also need to consider the impacts of PWM and the maximum practical duty cycle we can use. Because of a variety of factors, such as non-zero turn-on and turn-off times, it's not really practical to operate all the way up to 100% duty cycle. Realistically, the highest practical duty cycle value is likely around 95% or less. The effect of this is that our maximum operating voltage for the heating element is reduced to 95% of our power supply voltage. If you want to limit duty cycle to some lower value than 95%, then use that percentage as well.
 
-Additionally, our power conversion electronics will not be 100% efficient. For the purpose of these calculations, we're going to assume around 95% efficiency ($ \eta $). This may be optimistic, so you may want to choose a lower value depending on your own experience.
+Additionally, our power conversion electronics will not be 100% efficient. For the purpose of these calculations, we're going to assume around 95% efficiency ( $ \eta $ ). This may be optimistic, so you may want to choose a lower value depending on your own experience.
 
 $$ V_{operating} = V_{supply} \times D_{max} \times \eta $$
 
