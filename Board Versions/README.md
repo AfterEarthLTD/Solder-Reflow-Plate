@@ -52,7 +52,7 @@ To calculate the resistance of a linear trace of constant width, you would use t
 
 $$ R = \frac{\rho \times length}{width \times thickness} $$
 
-where $\rho$ is the resistivity of the material in $\Omega$m and length, width and thickness are all distances measured in *metres*. For 1 oz copper, the theoretical thickness of the copper foil on a PCB would be about $35 \times 10^-6 m$ thick (ie. 0.0000035m thick). For annealed copper, rho is about $1.72 \times 10^-8 \Omega m$. So for a copper trace 1.5mm wide, 70mm long in 1 oz copper, we would have
+where $\rho$ is the resistivity of the material in $\Omega$m and length, width and thickness are all distances measured in *metres*. For 1 oz copper, the theoretical thickness of the copper foil on a PCB would be about $35 \times 10^{-6} m$ thick (ie. 0.0000035m thick). For annealed copper, $\rho$ is about $1.72 \times 10^{-8} \Omega m$. So for a copper trace 1.5mm wide, 70mm long in 1 oz copper, we would have
 
 $$ R = \frac{1.72 \times 10^-8 \times 0.07}{0.0015 \times 0.000035} = 0.02293 \Omega $$
 
