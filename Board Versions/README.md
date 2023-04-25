@@ -22,9 +22,9 @@ Before we get carried away, we also need to consider the impacts of PWM and the 
 
 Additionally, our power conversion electronics will not be 100% efficient. For the purpose of these calculations, we're going to assume around 95% efficiency. This may be optimistic, so you may want to choose a lower value depending on your own experience.
 
-  Voperating = Vs x MaxDuty% x Efficiency%
+$$ V_{operating} = V_{supply} \times D_{max} \times \eta $$
 
-  19 x 95% x 95% = 17.15 V
+$$ 19 \times 0.95 \times 0.95 = 17.15 V $$
 
 We know that:
 
