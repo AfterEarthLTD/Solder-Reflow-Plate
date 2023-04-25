@@ -20,11 +20,11 @@ Let's assume you're designing to run from something like a laptop power brick or
 
 Before we get carried away, we also need to consider the impacts of PWM and the maximum practical duty cycle we can use. Because of a variety of factors, such as non-zero turn-on and turn-off times, it's not really practical to operate all the way up to 100% duty cycle. Realistically, the highest practical duty cycle value is likely around 95% or less. The effect of this is that our maximum operating voltage for the heating element is reduced to 95% of our power supply voltage. If you want to limit duty cycle to some lower value than 95%, then use that percentage as well.
 
-Additionally, our power conversion electronics will not be 100% efficient. For the purpose of these calculations, we're going to assume around 95% efficiency. This may be optimistic, so you may want to choose a lower value depending on your own experience.
+Additionally, our power conversion electronics will not be 100% efficient. For the purpose of these calculations, we're going to assume around 95% efficiency (\$ \eta \$). This may be optimistic, so you may want to choose a lower value depending on your own experience.
 
 $$ V_{operating} = V_{supply} \times D_{max} \times \eta $$
 
-$$ 19 \times 0.95 \times 0.95 = 17.15 V $$
+$$ V_{operating} = 19 \times 0.95 \times 0.95 = 17.15 V $$
 
 From ohm's law, we have that the power dissipated in the heating element is:
 
@@ -32,9 +32,9 @@ $$ P_{heating element} = \frac{V_{operating}^2}{R_{heating element}} $$
 
 Rearranging to calculate required resistance from voltage and power:
 
-$$ R_{heating element} = \frac{V_operating}^2}{P_{heating element}} $$
+$$ R_{heating element} = \frac{V_{operating}^2}{P_{heating element}} $$
 
-$$ \frac{17.15 \times 17.15}{90} = 3.27 \Omega $$
+$$ R_{heating element} = \frac{17.15 \times 17.15}{90} = 3.27 \Omega $$
 
 ## Resistance Versus Temperature ##
 
@@ -50,9 +50,13 @@ Some PCB design software may provide tools for estimating the resistance of PCB 
 
 To calculate the resistance of a linear trace of constant width, you would use the formula:
 
-$$ R = \frac{\Rho \times length}{width \times thickness} $$
+$$ R = \frac{\rho \times length}{width \times thickness} $$
 
-where rho is the resistivity of the material in ohm-m and length, width and thickness are all distances measured in *metres*. For 1 oz copper, the theoretical thickness of the copper foil on a PCB would be about 35 x 10^-6m thick (ie. 0000035m thick). For annealed copper, rho is about 1.72 x 10^-8 ohm-m. So for a copper trace 1.5mm wide, 70mm long in 1 oz copper, we would have R = 1.72 x 10^-8 x 0.07 / 0.0015 / 0.000035 = 0.02293 or about 23 milliohms. From working with JLCPCB for some of our earlier revisions, the actual resistances seemed to suggest that the copper thickness may be closer to 29 microns (ie. 0.000029m) than the 35 microns we expect. Although I now recommend PCBWay as a better option for manufacturing hotplates, I have less experience with them so far. I think 29 microns may also be a reasonable approximation of copper thickness there, but I have had some surprising results with some of my later, more complex layouts, so maybe my expectations are wrong or some process has changed at PCBWay in recent months. Your mileage may vary. Based on this, we can proceed as follows:
+where \$ \rho \$ is the resistivity of the material in \$ \Omega \$m and length, width and thickness are all distances measured in *metres*. For 1 oz copper, the theoretical thickness of the copper foil on a PCB would be about \$ 35 \times 10^-6 m \$ thick (ie. 0.0000035m thick). For annealed copper, rho is about \$ 1.72 \times 10^-8 \Omega m \$. So for a copper trace 1.5mm wide, 70mm long in 1 oz copper, we would have
+
+$$ R = \frac{1.72 \times 10^-8 \times 0.07}{0.0015 \times 0.000035} = 0.02293 \Omega $$
+
+or about 23 m\$ \Omega \$. From working with JLCPCB for some of our earlier revisions, the actual resistances seemed to suggest that the copper thickness may be closer to 29 microns (ie. 0.000029m) than the 35 microns we expect. Although I now recommend PCBWay as a better option for manufacturing hotplates, I have less experience with them so far. I think 29 microns may also be a reasonable approximation of copper thickness there, but I have had some surprising results with some of my later, more complex layouts, so maybe my expectations are wrong or some process has changed at PCBWay in recent months. Your mileage may vary. Based on this, we can proceed as follows:
 
 1. Break your heating element up into a series of linear traces with constant width.
 1. For each linear trace, measure the length of the trace along the centre of the trace. The ends of each trace should touch the ends of neighbouring traces, so at a corner the end would be in the mid-point of the corner for both traces entering or leaving that corner.
