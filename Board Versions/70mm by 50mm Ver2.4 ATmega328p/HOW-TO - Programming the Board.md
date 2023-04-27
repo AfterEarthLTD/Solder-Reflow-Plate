@@ -24,3 +24,7 @@ https://mcudude.github.io/MiniCore/package_MCUdude_MiniCore_index.json
 3) Set the programmer of your choice, e.g. 'Arduino as ISP (MiniCore)', 'USB ASP', etc, and set the correct port.
 4) Burn bootloader to the Solder Reflow Board. This sets fuses and registers correctly so that the sketch needs not directly deal with them.
 5) Compile and upload to the Solder Reflow Board.
+
+### PWM Frequency
+
+By default, the PWM control of the heating element operates at the default PWM frequency used by Arduinos of around 490Hz. This can be increased to roughly 63kHz by uncommenting the definition of the FAST_PWM macro. Note that with current hardware designs, this will likely result in overheating of the input capacitor. The circuit requires redesign to correct this fault. If FAST_PWM is enabled, this will also modify the messages on the screen to remind the user that the input capacitor may get hot.

@@ -29,6 +29,27 @@
 #include <Adafruit_SSD1306.h>
 #include <EEPROM.h>
 
+/**
+ * Uncomment the following line to use Fast PWM - around 63kHz.
+ * Leave it commented out to use default PWM frequency - around 490Hz.
+ * Note that current designs induce high ripple current in the input capacitor.
+ * High frequency operation is desirable, but until the control circuitry is updated,
+ * high frequency operation may cause it to get very hot and possibly fail. Low frequency
+ * operation avoids this problem, but will cause audible sound from the hotplate and tax
+ * the power supply more than is desirable.
+ */
+//#define FAST_PWM
+
+/**
+ * Alter messages on screen to make it clear when FAST_PWM is enabled, which may cause
+ * a hot input capacitor.
+ */
+#ifdef FAST_PWM
+#define HEATING_MSG "Hot Input Cap"
+#else
+#define HEATING_MSG "Begin Heating"
+#endif
+
 //Version Definitions
 static const PROGMEM float hw = 2.4;
 static const PROGMEM float sw = 1.0;
@@ -145,8 +166,10 @@ void setup() {
   maxTempIndex = EEPROM.read(tempIndexAddr) % sizeof(maxTempArray);
 
   //Enable Fast PWM with no prescaler
+#ifdef FAST_PWM
   TCCR2A = _BV(COM2A1) | _BV(COM2B1) | _BV(WGM21) | _BV(WGM20);
   TCCR2B = _BV(CS20);
+#endif
 
   //Start-up Diplay
   display.begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS);
@@ -219,7 +242,7 @@ void main_menu() {
       display.print(F("HOLD  BUTTONS"));
       display.drawLine( 3, 12, 79, 12, SSD1306_WHITE ); 
       display.setCursor(3,18);
-      display.print(F("Begin Heating"));
+      display.print(F(HEATING_MSG));
     }
     x = ( x + 1 ) % y; //Display change increment and modulus
     
