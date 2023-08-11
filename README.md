@@ -63,10 +63,6 @@ I used Arduino IDE to compile my C code and generate the hex file (turn on verbo
 > Writing flash...
 > Done.
 
-**EDIT: There's problems where the screen has garbled graphics and doesn't even turn on. It did turn on for the first few times.**
-
-**EDIT2: The screen no longer turns on after a few more tries. The actual bed (if you know what button presses to use actually ends up working). The strange thing is that I hooked up the SSD1306 to a separate ESP32 device and it works fine. So it's definitely not the screen that's the issue. I'm still investigating this.**
-
 # **Solder Reflow Plate**
 
 ###### By AfterEarth Ltd
