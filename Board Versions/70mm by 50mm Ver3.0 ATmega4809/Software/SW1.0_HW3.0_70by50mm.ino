@@ -1,31 +1,8 @@
- /* Solder Reflow Plate Sketch
+/* Solder Reflow Plate Sketch
  *  H/W - Ver 3.0
  *  S/W - Ver 1.0
  *  by Chris Halsall     
  *  modified by https://github.com/gotnull
- */
-
-/* To prepare
- * 1) Install MiniCore in additional boards; (copy into File->Preferences->Additional Boards Manager URLs)
- *     https://mcudude.github.io/MegaCoreX/package_MCUdude_MegaCoreX_index.json
- * 2) Then add MiniCore by searching and installing (Tools->Board->Board Manager)
- * 3) Install Adafruit_GFX and Adafruit_SSD1306 libraries (Tools->Manage Libraries)
- */
-
-/* To program
- *  1) Select the following settings under (Tools)
- *      Board->Minicore->Atmega4809 
- *      Clock->Internal 16MHz
- *      BOD->BOD 2.6V
- *      EEPROM->EEPROM retained
- *      Pinout->48 pin standard
- *      Reset pin->Reset
- *      Compiler LTO->LTO Disabled
- *      Bootloader->No bootloader
- *  2) Compile and upload using UDPI programmer or (FT232R with RX, TX and 1K resistor between them, then hookup RX to UDPI and GND to GND)
- *  3) If using FT232R then use the following commands to a) ping b) write to the microcontroller (pip3 install pymcuprog)
- *    a) pymcuprog ping -d atmega4809 -t uart -u /dev/tty.usbserial-XXXXXXXX
- *    b) pymcuprog write -f SW1.0_HW3.0_70by50mm.ino.hex -d atmega4809 -t uart -u /dev/tty.usbserial-AH0014LK
  */
 
 #include <SPI.h>
@@ -35,7 +12,7 @@
 #include <Bounce2.h>
 
 //Version Definitions
-static const PROGMEM float hw = 2.4;
+static const PROGMEM float hw = 3.0;
 static const PROGMEM float sw = 1.0;
 
 //Screen Definitions
